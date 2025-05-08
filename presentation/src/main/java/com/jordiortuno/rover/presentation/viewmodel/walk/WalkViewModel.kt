@@ -1,12 +1,14 @@
 package com.jordiortuno.rover.presentation.viewmodel.walk
 
-import com.jordiortuno.rover.presentation.viewmodel.infra.UIEffect
-import com.jordiortuno.rover.presentation.viewmodel.infra.UIEvent
-import com.jordiortuno.rover.presentation.viewmodel.infra.UIState
+import androidx.lifecycle.viewModelScope
+import com.jordiortuno.rover.domain.usecase.GetRoverInstructionsUseCase
 import com.jordiortuno.rover.presentation.viewmodel.infra.ViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
-class WalkViewModel : ViewModel<WalkContract.Event, WalkContract.State, WalkContract.Effect>() {
+class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstructionsUseCase) :
+    ViewModel<WalkContract.Event, WalkContract.State, WalkContract.Effect>() {
     override fun createInitialState(): WalkContract.State {
         return WalkContract.State(true)
     }
@@ -14,68 +16,103 @@ class WalkViewModel : ViewModel<WalkContract.Event, WalkContract.State, WalkCont
     override fun handleEvent(event: WalkContract.Event) {
         when (event) {
             WalkContract.Event.OnInitialized -> {
-                setState {
-                    this.copy(
-                        uiModel = WalkContract.State.UiModel(
-                            Grid(6, 6), GridPosition(
-                                2, 2,
-                                Direction.NORTH
+                viewModelScope.launch {
+                    getRoverInstructionsUseCase().fold({
+
+                    }) {
+                        setState {
+                            this.copy(
+                                uiModel = WalkContract.State.UiModel(
+                                    Grid(it.grid.columns, it.grid.rows), GridPosition(
+                                        it.roverPosition.x, it.roverPosition.y,
+                                        it.roverPosition.direction.toUiModel()
+                                    ),
+                                    movements = it.movements.map { it.toUiModel() }
+                                )
                             )
-                        )
-                    )
+                        }
+                    }
                 }
             }
 
-            WalkContract.Event.PlayMovement -> setState {
-                this.copy(
-                    uiModel =this.uiModel?.copy(
-                        roverPosition = GridPosition(2,2, Direction.EST)
-                    )
-                )
+            WalkContract.Event.PlayMovement -> {
+                viewModelScope.launch {
+                    state.value.uiModel?.movements?.forEach { movement ->
+                        when (movement) {
+                            Movement.LEFT -> setState {
+                                this.copy(
+                                    uiModel = this.uiModel?.copy(
+                                        roverPosition = this.uiModel.roverPosition.copy(
+                                            direction = when (this.uiModel.roverPosition.direction) {
+                                                Direction.NORTH -> Direction.WEST
+                                                Direction.WEST -> Direction.SOUTH
+                                                Direction.SOUTH -> Direction.EST
+                                                Direction.EST -> Direction.NORTH
+                                            }
+                                        )
+                                    )
+                                )
+                            }
+
+                            Movement.RIGHT -> setState {
+                                this.copy(
+                                    uiModel = this.uiModel?.copy(
+                                        roverPosition = this.uiModel.roverPosition.copy(
+                                            direction = when (this.uiModel.roverPosition.direction) {
+                                                Direction.NORTH -> Direction.EST
+                                                Direction.EST -> Direction.SOUTH
+                                                Direction.SOUTH -> Direction.WEST
+                                                Direction.WEST -> Direction.NORTH
+                                            }
+                                        )
+                                    )
+                                )
+                            }
+
+                            Movement.MOVE -> setState {
+                                this.copy(
+                                    uiModel = this.uiModel?.copy(
+                                        roverPosition = this.uiModel.roverPosition.copy(
+                                            x = when {
+                                                this.uiModel.roverPosition.direction == Direction.EST && this.uiModel.roverPosition.x < this.uiModel.grid.columns - 1 -> {
+                                                    this.uiModel.roverPosition.x + 1
+                                                }
+
+                                                this.uiModel.roverPosition.direction == Direction.WEST && this.uiModel.roverPosition.x > 0 -> {
+                                                    this.uiModel.roverPosition.x - 1
+                                                }
+
+                                                else -> {
+                                                    this.uiModel.roverPosition.x
+                                                }
+                                            },
+                                            y = when {
+                                                this.uiModel.roverPosition.direction == Direction.NORTH && this.uiModel.roverPosition.y < this.uiModel.grid.rows - 1 -> {
+                                                    this.uiModel.roverPosition.y + 1
+                                                }
+
+                                                this.uiModel.roverPosition.direction == Direction.SOUTH && this.uiModel.roverPosition.y > 0 -> {
+                                                    this.uiModel.roverPosition.y - 1
+                                                }
+
+                                                else -> {
+                                                    this.uiModel.roverPosition.y
+                                                }
+                                            }
+                                        )
+                                    )
+                                )
+                            }
+                        }
+
+                        delay(1000)
+                    }
+                }
+
+
             }
         }
     }
 }
 
 
-interface WalkContract {
-    data class State(
-        val loading: Boolean = false,
-        val uiModel: UiModel? = null,
-    ) : UIState {
-        data class UiModel(val grid: Grid, val roverPosition: GridPosition)
-    }
-
-    sealed interface Event : UIEvent {
-        data object OnInitialized : Event
-        data object PlayMovement : Event
-    }
-
-    sealed interface Effect : UIEffect {
-        sealed interface Navigation : Effect {
-            data object NavigateStartRoverWalk : Navigation
-        }
-    }
-}
-
-data class GridPosition(
-    val x: Int,
-    val y: Int,
-    val direction: Direction,
-){
-    val position = x*y
-}
-
-data class Grid(
-    val columns: Int,
-    val rows: Int,
-) {
-    val numberOfCells = columns * rows
-}
-
-enum class Direction {
-    NORTH,
-    WEST,
-    SOUTH,
-    EST
-}

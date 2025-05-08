@@ -5,13 +5,13 @@ import com.jordiortuno.rover.domain.model.RoverInstructions
 data class RoverInstructionsData(
     val roverPosition: RoverPositionData,
     val grid: GridData,
-    val movements: List<String>,
+    val movements: List<Movement>,
 ) {
     fun toDomain(): RoverInstructions {
         return RoverInstructions(
             roverPosition = roverPosition.toDomain(),
             grid = grid.toDomain(),
-            movements = movements
+            movements = movements.map { it.toDomain() }
         )
     }
 
@@ -49,6 +49,20 @@ data class RoverInstructionsData(
     ) {
         fun toDomain(): RoverInstructions.Grid {
             return RoverInstructions.Grid(columns, rows)
+        }
+    }
+
+    enum class Movement {
+        LEFT,
+        RIGHT,
+        MOVE;
+
+        fun toDomain(): RoverInstructions.Movement {
+            return when (this) {
+                LEFT -> RoverInstructions.Movement.LEFT
+                RIGHT -> RoverInstructions.Movement.RIGHT
+                MOVE -> RoverInstructions.Movement.MOVE
+            }
         }
     }
 
