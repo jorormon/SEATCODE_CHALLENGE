@@ -99,7 +99,7 @@ fun WalkScreenContent(
                 if (uiModel.roverPosition.x == x && uiModel.roverPosition.y == y) {
                     Image(
                         painter = painterResource(R.drawable.rover),
-                        contentDescription = null,
+                        contentDescription = "rover",
                         modifier = Modifier
                             .size(56.dp)
                             .rotate(
