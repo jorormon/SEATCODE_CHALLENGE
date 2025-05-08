@@ -12,9 +12,11 @@ interface WalkContract {
     ) : UIState {
         data class UiModel(
             val grid: Grid,
-            val roverPosition: GridPosition,
+            val roverPosition: RoverPosition,
             val movements: List<Movement>,
+            val lastPosition: String? = null,
         )
+
     }
 
     sealed interface Event : UIEvent {
@@ -29,12 +31,14 @@ interface WalkContract {
     }
 }
 
-data class GridPosition(
+data class RoverPosition(
     val x: Int,
     val y: Int,
     val direction: Direction,
 ) {
-    val position = x * y
+    fun toText(): String {
+        return "$x $y ${direction.name.first()}"
+    }
 }
 
 data class Grid(
@@ -51,16 +55,16 @@ enum class Direction {
     EST
 }
 
-enum class Movement{
+enum class Movement {
     LEFT,
     RIGHT,
     MOVE;
 }
 
-fun RoverInstructions.Movement.toUiModel(): Movement{
-    return when(this){
+fun RoverInstructions.Movement.toUiModel(): Movement {
+    return when (this) {
         RoverInstructions.Movement.LEFT -> Movement.LEFT
-        RoverInstructions.Movement.RIGHT ->Movement.RIGHT
+        RoverInstructions.Movement.RIGHT -> Movement.RIGHT
         RoverInstructions.Movement.MOVE -> Movement.MOVE
     }
 }

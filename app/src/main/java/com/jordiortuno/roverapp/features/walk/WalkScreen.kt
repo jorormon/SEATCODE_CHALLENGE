@@ -1,43 +1,43 @@
 package com.jordiortuno.roverapp.features.walk
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import com.jordiortuno.rover.presentation.viewmodel.walk.Direction
 import com.jordiortuno.rover.presentation.viewmodel.walk.WalkContract
 import com.jordiortuno.roverapp.R
+import com.jordiortuno.roverapp.ui.theme.Pink40
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @Composable
 fun WalkScreen(
@@ -74,7 +74,6 @@ fun WalkScreenContent(
     uiModel: WalkContract.State.UiModel,
     onEventSend: (WalkContract.Event) -> Unit,
 ) {
-
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -115,6 +114,29 @@ fun WalkScreenContent(
             Text("Play")
         }
     }
+
+    uiModel.lastPosition?.let {
+        Box(modifier = Modifier.fillMaxSize(), Alignment.Center) {
+
+            Box(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Pink40)
+                    .border(2.dp, Pink40, RoundedCornerShape(12.dp))
+            ) {
+                Text(
+                    stringResource(R.string.water_found) + "\n$it",
+                    style = MaterialTheme.typography.displaySmall,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    fontStyle = FontStyle.Italic,
+                )
+            }
+
+        }
+    }
+
 }
 
 @Composable
