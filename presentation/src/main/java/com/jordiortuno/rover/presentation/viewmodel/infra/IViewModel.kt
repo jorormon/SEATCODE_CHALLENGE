@@ -1,4 +1,4 @@
-package com.jordiortuno.rover.presentation.viewmodel
+package com.jordiortuno.rover.presentation.viewmodel.infra
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
