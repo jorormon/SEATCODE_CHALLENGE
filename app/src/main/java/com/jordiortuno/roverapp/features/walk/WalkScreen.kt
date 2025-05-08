@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,6 +35,7 @@ import com.jordiortuno.rover.presentation.viewmodel.walk.Direction
 import com.jordiortuno.rover.presentation.viewmodel.walk.RoverState
 import com.jordiortuno.rover.presentation.viewmodel.walk.WalkContract
 import com.jordiortuno.roverapp.R
+import com.jordiortuno.roverapp.components.GameButton
 import com.jordiortuno.roverapp.ui.theme.Pink40
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -110,39 +110,37 @@ fun WalkScreenContent(
             }
         }
 
-
-        Button({
-            when (uiModel.state) {
-                RoverState.STOPPED -> {
-                    onEventSend(WalkContract.Event.PlayMovement)
-                }
-
-                RoverState.PLAYING -> {
-                    onEventSend(WalkContract.Event.PauseMovement)
-                }
-
-                RoverState.PAUSED -> {
-                    onEventSend(WalkContract.Event.ContinueMovement)
-                }
-
-                else -> {}
+        GameButton(when (uiModel.state) {
+            RoverState.STOPPED -> {
+                stringResource(R.string.play)
             }
-        }) {
-            val text = when (uiModel.state) {
-                RoverState.STOPPED -> {
-                    "PLAY"
-                }
 
-                RoverState.PAUSED -> {
-                    "CONTINUE"
-                }
-
-                RoverState.PLAYING -> {
-                    "PAUSE"
-                }
+            RoverState.PAUSED -> {
+                stringResource(R.string.continuing)
             }
-            Text(text)
-        }
+
+            RoverState.PLAYING -> {
+                stringResource(R.string.pause)
+            }
+            RoverState.FINISHED -> {
+                stringResource(R.string.restart)
+            }
+        }.uppercase(), {when (uiModel.state) {
+            RoverState.FINISHED -> {
+                onEventSend(WalkContract.Event.ResetRover)
+            }
+            RoverState.STOPPED -> {
+                onEventSend(WalkContract.Event.PlayMovement)
+            }
+
+            RoverState.PLAYING -> {
+                onEventSend(WalkContract.Event.PauseMovement)
+            }
+
+            RoverState.PAUSED -> {
+                onEventSend(WalkContract.Event.ContinueMovement)
+            }
+        }}, modifier = Modifier.padding(24.dp))
     }
 
     uiModel.lastPosition?.let {

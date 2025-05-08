@@ -3,7 +3,6 @@ package com.jordiortuno.rover.presentation.viewmodel.walk
 import androidx.lifecycle.viewModelScope
 import com.jordiortuno.rover.domain.usecase.GetRoverInstructionsUseCase
 import com.jordiortuno.rover.presentation.viewmodel.infra.ViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -24,9 +23,6 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
             WalkContract.Event.OnInitialized -> onInitialized()
 
             WalkContract.Event.PlayMovement -> {
-                if (state.value.uiModel?.lastPosition != null) {
-                    resetRoverPosition()
-                }
                 onPlayMovement()
             }
 
@@ -37,6 +33,10 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
                         state = RoverState.PAUSED,
                     )
                 )
+            }
+
+            WalkContract.Event.ResetRover -> {
+                resetRoverPosition()
             }
         }
     }
@@ -87,7 +87,6 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
 
                 doMovement(movement)
                 iterator.remove()
-                println("${movementsRemaining.size}")
                 delay(1000)
             }
 
@@ -95,7 +94,7 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
                 this.copy(
                     uiModel = this.uiModel?.copy(
                         lastPosition = this.uiModel.roverPosition.toText(),
-                        state = RoverState.STOPPED,
+                        state = RoverState.FINISHED,
                     )
                 )
             }
@@ -109,7 +108,8 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
                 this.copy(
                     uiModel = this.uiModel?.copy(
                         lastPosition = null,
-                        roverPosition = startPositionRover
+                        roverPosition = startPositionRover,
+                        state = RoverState.STOPPED
                     )
                 )
             }
@@ -117,7 +117,6 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
     }
 
     private fun doMovement(movement: Movement) {
-        println("do movement $movement")
         when (movement) {
             Movement.LEFT -> setState {
                 this.copy(

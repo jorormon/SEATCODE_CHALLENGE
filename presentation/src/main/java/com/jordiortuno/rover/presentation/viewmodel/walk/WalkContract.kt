@@ -15,7 +15,7 @@ interface WalkContract {
             val roverPosition: RoverPosition,
             val movements: List<Movement>,
             val lastPosition: String? = null,
-            val state: RoverState = RoverState.STOPPED
+            val state: RoverState = RoverState.STOPPED,
         )
 
     }
@@ -25,6 +25,7 @@ interface WalkContract {
         data object PlayMovement : Event
         data object PauseMovement : Event
         data object ContinueMovement : Event
+        data object ResetRover : Event
     }
 
     sealed interface Effect : UIEffect {
@@ -33,11 +34,14 @@ interface WalkContract {
         }
     }
 }
-enum class RoverState{
+
+enum class RoverState {
     PLAYING,
     PAUSED,
-    STOPPED
+    STOPPED,
+    FINISHED
 }
+
 data class RoverPosition(
     val x: Int,
     val y: Int,

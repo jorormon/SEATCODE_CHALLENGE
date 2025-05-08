@@ -27,12 +27,16 @@ fun NavigationGraph(
     ) { _ ->
         NavHost(
             navController = navController,
-            startDestination = WalkRoute,
+            startDestination = SplashRoute,
             modifier = Modifier
         ) {
             composable<SplashRoute> {
                 SplashScreen {
-                    navController.navigate(HomeRoute)
+                    navController.navigate(HomeRoute){
+                        popUpTo(SplashRoute) {
+                            inclusive = true
+                        }
+                    }
                 }
             }
             composable<HomeRoute> {
