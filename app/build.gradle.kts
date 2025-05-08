@@ -1,16 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.jordiortuno.roverapp"
-    compileSdk = 34
+    compileSdk = libs.versions.compilesdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.jordiortuno.roverapp"
         minSdk = 28
-        targetSdk = 34
+        targetSdk =  libs.versions.compilesdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -50,6 +52,16 @@ android {
 }
 
 dependencies {
+    implementation(project(":presentation"))
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel.navigation)
+
+    implementation(libs.compose.lottie)
+    implementation(libs.lottie)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -59,6 +71,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

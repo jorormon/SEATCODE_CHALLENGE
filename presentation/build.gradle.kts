@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.jordiortuno.rover.presentation"
-    compileSdk = 34
+    compileSdk = libs.versions.compilesdk.get().toInt()
 
     defaultConfig {
         minSdk = 28
@@ -33,6 +33,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
+    implementation(libs.koin.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
