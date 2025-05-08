@@ -8,7 +8,7 @@ import com.jordiortuno.rover.presentation.viewmodel.infra.ViewModel
 
 class HomeViewModel : ViewModel<HomeContract.Event, HomeContract.State, HomeContract.Effect>() {
     override fun createInitialState(): HomeContract.State {
-        return HomeContract.State(true)
+        return HomeContract.State
     }
 
     override fun handleEvent(event: HomeContract.Event) {
@@ -25,10 +25,7 @@ class HomeViewModel : ViewModel<HomeContract.Event, HomeContract.State, HomeCont
 
 interface HomeContract {
 
-    data class State(
-        val loading: Boolean = false,
-        val entity: String? = null,
-    ) : UIState
+    data object State: UIState
 
     sealed interface Event : UIEvent {
         data object OnClickStart : Event

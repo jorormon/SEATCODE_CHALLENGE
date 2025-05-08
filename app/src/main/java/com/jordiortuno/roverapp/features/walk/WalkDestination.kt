@@ -27,8 +27,6 @@ fun WalkDestination(navController: NavController) {
                 WalkContract.Effect.Navigation.NavigateStartRoverWalk -> navController.navigate(
                     WalkRoute
                 )
-
-                else -> {}
             }
         }
     )

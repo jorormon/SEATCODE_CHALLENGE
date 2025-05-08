@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.jordiortuno.rover.presentation.viewmodel.home.HomeContract
 import com.jordiortuno.roverapp.R
 import com.jordiortuno.roverapp.components.GameButton
+import com.jordiortuno.roverapp.ui.theme.RoverTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -40,8 +41,6 @@ fun HomeScreen(
                 is HomeContract.Effect.Navigation -> {
                     onNavigationRequested(effect)
                 }
-
-                else -> {}
             }
         }
     }
@@ -75,5 +74,13 @@ fun HomeScreenContent(onEventSend: (HomeContract.Event) -> Unit) {
         )
         Spacer(modifier = Modifier.height(24.dp))
         GameButton(stringResource(R.string.start), {onEventSend(HomeContract.Event.OnClickStart)}, modifier = Modifier.padding(24.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenContentPreview() {
+    RoverTheme {
+        HomeScreenContent(onEventSend = {})
     }
 }

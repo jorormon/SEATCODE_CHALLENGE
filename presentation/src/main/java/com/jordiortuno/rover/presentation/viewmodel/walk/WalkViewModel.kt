@@ -18,6 +18,8 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
 
     private var movementsRemaining: MutableList<Movement> = mutableListOf()
 
+    private val mutex: Mutex = Mutex()
+
     override fun handleEvent(event: WalkContract.Event) {
         when (event) {
             WalkContract.Event.OnInitialized -> onInitialized()
@@ -43,25 +45,25 @@ class WalkViewModel(private val getRoverInstructionsUseCase: GetRoverInstruction
 
     private fun onInitialized() {
         viewModelScope.launch {
-            getRoverInstructionsUseCase().fold({}) {
+            getRoverInstructionsUseCase().fold({}) { roverInstructions ->
                 val initPosition = RoverPosition(
-                    it.roverPosition.x, it.roverPosition.y,
-                    it.roverPosition.direction.toUiModel()
+                    roverInstructions.roverPosition.x, roverInstructions.roverPosition.y,
+                    roverInstructions.roverPosition.direction.toUiModel()
                 )
                 startPositionRover = initPosition
                 setState {
                     this.copy(
+                        loading = false,
                         uiModel = WalkContract.State.UiModel(
-                            Grid(it.grid.columns, it.grid.rows), initPosition,
-                            movements = it.movements.map { it.toUiModel() },
+                            Grid(roverInstructions.grid.columns, roverInstructions.grid.rows),
+                            initPosition,
+                            movements = roverInstructions.movements.map { it.toUiModel() },
                         )
                     )
                 }
             }
         }
     }
-
-    val mutex: Mutex = Mutex()
 
     private fun onPlayMovement(onContinue: Boolean = false) {
         viewModelScope.launch {

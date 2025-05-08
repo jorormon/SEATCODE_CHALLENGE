@@ -29,9 +29,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jordiortuno.rover.presentation.viewmodel.walk.Direction
+import com.jordiortuno.rover.presentation.viewmodel.walk.Grid
+import com.jordiortuno.rover.presentation.viewmodel.walk.Movement
+import com.jordiortuno.rover.presentation.viewmodel.walk.RoverPosition
 import com.jordiortuno.rover.presentation.viewmodel.walk.RoverState
 import com.jordiortuno.rover.presentation.viewmodel.walk.WalkContract
 import com.jordiortuno.roverapp.R
@@ -53,8 +57,6 @@ fun WalkScreen(
                 is WalkContract.Effect.Navigation -> {
                     onNavigationRequested(effect)
                 }
-
-                else -> {}
             }
         }
     }
@@ -65,6 +67,9 @@ fun WalkScreen(
         modifier = Modifier.fillMaxSize(),
     )
     when {
+        state.loading -> {
+            //Do nothing because loading is quickly now
+        }
         state.uiModel != null -> state.uiModel?.let { WalkScreenContent(it, onEventSend) }
     }
 
@@ -188,4 +193,38 @@ fun Cell(x: Int, y: Int) {
             )
         }
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun WalkScreenContentPreview() {
+    val mockGrid = Grid(columns = 6, rows = 6)
+    val mockRoverPosition = RoverPosition(x = 2, y = 2, direction = Direction.NORTH)
+    val mockMovements = listOf(Movement.LEFT, Movement.MOVE)
+    val mockUiModel = WalkContract.State.UiModel(
+        grid = mockGrid,
+        roverPosition = mockRoverPosition,
+        movements = mockMovements,
+        state = RoverState.STOPPED
+    )
+
+    WalkScreenContent(uiModel = mockUiModel, onEventSend = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+fun WalkScreenContentEndPreview() {
+    val mockGrid = Grid(columns = 6, rows = 6)
+    val mockRoverPosition = RoverPosition(x = 2, y = 2, direction = Direction.NORTH)
+    val mockMovements = listOf(Movement.LEFT, Movement.MOVE)
+    val mockUiModel = WalkContract.State.UiModel(
+        grid = mockGrid,
+        roverPosition = mockRoverPosition,
+        movements = mockMovements,
+        lastPosition = "1 3 N",
+        state = RoverState.STOPPED
+    )
+
+    WalkScreenContent(uiModel = mockUiModel, onEventSend = {})
 }
