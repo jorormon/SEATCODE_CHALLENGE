@@ -15,4 +15,8 @@ sealed class Result<out S : Any?, out F : Any> {
     }
 
     fun orNull(): S? = fold(onFail = { null }, onSuccess = { it })
+
+
 }
+inline fun <reified S : Any> S.success() = Result.Success(this)
+inline fun <reified F : Error> F.error() = Result.Fail(this)
