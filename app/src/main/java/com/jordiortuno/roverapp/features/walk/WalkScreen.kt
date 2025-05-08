@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jordiortuno.rover.presentation.viewmodel.walk.Direction
+import com.jordiortuno.rover.presentation.viewmodel.walk.RoverState
 import com.jordiortuno.rover.presentation.viewmodel.walk.WalkContract
 import com.jordiortuno.roverapp.R
 import com.jordiortuno.roverapp.ui.theme.Pink40
@@ -110,8 +111,37 @@ fun WalkScreenContent(
         }
 
 
-        Button({ onEventSend(WalkContract.Event.PlayMovement) }) {
-            Text("Play")
+        Button({
+            when (uiModel.state) {
+                RoverState.STOPPED -> {
+                    onEventSend(WalkContract.Event.PlayMovement)
+                }
+
+                RoverState.PLAYING -> {
+                    onEventSend(WalkContract.Event.PauseMovement)
+                }
+
+                RoverState.PAUSED -> {
+                    onEventSend(WalkContract.Event.ContinueMovement)
+                }
+
+                else -> {}
+            }
+        }) {
+            val text = when (uiModel.state) {
+                RoverState.STOPPED -> {
+                    "PLAY"
+                }
+
+                RoverState.PAUSED -> {
+                    "CONTINUE"
+                }
+
+                RoverState.PLAYING -> {
+                    "PAUSE"
+                }
+            }
+            Text(text)
         }
     }
 
