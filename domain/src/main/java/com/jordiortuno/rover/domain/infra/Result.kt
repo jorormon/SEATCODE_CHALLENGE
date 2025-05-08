@@ -1,4 +1,4 @@
-package com.jordiortuno.rover.domain
+package com.jordiortuno.rover.domain.infra
 
 sealed class Result<out S : Any?, out F : Any> {
     data class Success<out S : Any?>(val data: S) : Result<S, Nothing>()

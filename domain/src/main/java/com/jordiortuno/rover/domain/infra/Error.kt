@@ -1,4 +1,4 @@
-package com.jordiortuno.rover.domain
+package com.jordiortuno.rover.domain.infra
 
 sealed interface Error {
     data class GenericError(var message: String? = null) : Error {

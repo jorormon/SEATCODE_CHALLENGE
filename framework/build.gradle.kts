@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.jordiortuno.rover.di"
+    namespace = "com.jordiortuno.rover.framework"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 28
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -33,16 +33,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":framework"))
-    implementation(project(":presentation"))
-    implementation(project(":data"))
-    implementation(project(":domain"))
 
-    implementation(project.dependencies.platform(libs.koin.bom))
-    implementation(libs.koin.android)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(project(":data"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

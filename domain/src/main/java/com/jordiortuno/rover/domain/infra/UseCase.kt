@@ -1,4 +1,4 @@
-package com.jordiortuno.rover.domain
+package com.jordiortuno.rover.domain.infra
 
 abstract class UseCase<in IN, out OUT : Any?> {
 
