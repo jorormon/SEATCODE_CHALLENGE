@@ -7,3 +7,8 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+dependencies {
+    implementation(project(":domain"))
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+}
