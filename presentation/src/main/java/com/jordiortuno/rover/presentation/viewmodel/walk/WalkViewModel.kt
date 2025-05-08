@@ -16,11 +16,22 @@ class WalkViewModel : ViewModel<WalkContract.Event, WalkContract.State, WalkCont
             WalkContract.Event.OnInitialized -> {
                 setState {
                     this.copy(
-                        uiModel = WalkContract.State.UiModel(Grid(5, 5), GridPosition(1, 2,
-                            Direction.NORTH
-                        ))
+                        uiModel = WalkContract.State.UiModel(
+                            Grid(6, 6), GridPosition(
+                                2, 2,
+                                Direction.NORTH
+                            )
+                        )
                     )
                 }
+            }
+
+            WalkContract.Event.PlayMovement -> setState {
+                this.copy(
+                    uiModel =this.uiModel?.copy(
+                        roverPosition = GridPosition(2,2, Direction.EST)
+                    )
+                )
             }
         }
     }
@@ -32,11 +43,12 @@ interface WalkContract {
         val loading: Boolean = false,
         val uiModel: UiModel? = null,
     ) : UIState {
-        data class UiModel(val grid: Grid, val position: GridPosition)
+        data class UiModel(val grid: Grid, val roverPosition: GridPosition)
     }
 
     sealed interface Event : UIEvent {
         data object OnInitialized : Event
+        data object PlayMovement : Event
     }
 
     sealed interface Effect : UIEffect {
@@ -49,8 +61,10 @@ interface WalkContract {
 data class GridPosition(
     val x: Int,
     val y: Int,
-    val direction: Direction
-)
+    val direction: Direction,
+){
+    val position = x*y
+}
 
 data class Grid(
     val columns: Int,
@@ -59,7 +73,7 @@ data class Grid(
     val numberOfCells = columns * rows
 }
 
-enum class Direction{
+enum class Direction {
     NORTH,
     WEST,
     SOUTH,
