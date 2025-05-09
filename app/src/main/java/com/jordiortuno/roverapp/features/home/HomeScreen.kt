@@ -50,8 +50,6 @@ fun HomeScreen(
 }
 
 
-
-
 @Composable
 fun HomeScreenContent(onEventSend: (HomeContract.Event) -> Unit) {
     Image(
@@ -73,7 +71,11 @@ fun HomeScreenContent(onEventSend: (HomeContract.Event) -> Unit) {
             fontStyle = FontStyle.Italic
         )
         Spacer(modifier = Modifier.height(24.dp))
-        GameButton(stringResource(R.string.start), {onEventSend(HomeContract.Event.OnClickStart)}, modifier = Modifier.padding(24.dp))
+        GameButton(
+            stringResource(R.string.start),
+            { onEventSend(HomeContract.Event.OnClickStart) },
+            modifier = Modifier.padding(24.dp)
+        )
     }
 }
 

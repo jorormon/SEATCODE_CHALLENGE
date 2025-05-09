@@ -1,19 +1,4 @@
-# Nombre del proyecto
-
-Licencia](https://img.shields.io/badge/license-MIT-blue.svg)  
-Estado de compilación](https://img.shields.io/badge/build-passing-brightgreen.svg)
-
-## Índice
-
-- Resumen](#resumen)
-- Características](#características)
-- Capturas de pantalla](#screenshots)
-- Primeros pasos](#getting-started)
-    - Requisitos previos](#prerequisites)
-    - Instalación](#installation)
-- Uso](#usage)
-- Construido con](#built-with)
-- Consideraciones
+# Rover
 
 ## Visión general
 
@@ -82,3 +67,6 @@ Como hemos planteado el proyecto con Clean Architecture, tenerlo abstraido nos d
 Integración continua:
 Para integración continua, no se ha implementado debido a la naturaleza del proyecto. En un proyecto real lo realizaría con Fastlane, que es una herramienta para automatización de código y que junto con GitHub Actions nos permite definir flujos de trabajo automatizados directamente en el repositorio, lo cual nos permite ejecutar scripts de Fastlane de manera continua.
 
+Herramientas de formateo de codigo y calidad de código:
+No se ha implementado por la naturaleza del proyecto. Dado el caso se utilizaria sonarQube para inspeccionar de manera continua la calidad del código detectando errores, vulnerabilidades de seguridad y manteniendo altos estándares de calidad.
+Por otra parte para evitar conflictos de formateo en el código, utilizariamos ktlint que verifica el estilo y puede formatear automáticamente el código para que se adhiera a las reglas de estilo.
